@@ -62,12 +62,12 @@ app.post('/webhook/checkout', (req, res) => {
   console.log('✓ Webhook signature valid');
 
   const checkout = JSON.parse(req.rawBody.toString());
-  const checkoutId = checkout.id;
+  const checkoutId = checkout.token;
 
   // DEBUG: Log what we're receiving
   console.log(`DEBUG: completed_at = ${checkout.completed_at}`);
   console.log(`DEBUG: abandoned_checkout_url = ${checkout.abandoned_checkout_url}`);
-  console.log(`DEBUG: Full checkout keys: ${Object.keys(checkout).join(', ')}`);
+  console.log(`DEBUG: checkoutId (token) = ${checkoutId}`);
 
   // Detect abandoned cart: has abandoned_checkout_url but completed_at is null
   if (checkout.completed_at === null && checkout.abandoned_checkout_url) {
@@ -105,51 +105,4 @@ async function sendWhatsAppNotifications(checkout) {
       totalPrice += parseFloat(item.price) * item.quantity;
     });
 
-    // Message content
-    const message = `Customer Name: ${customer.first_name || 'N/A'} ${customer.last_name || ''}
-Phone number: ${checkout.phone || 'N/A'}
-Email: ${checkout.email || 'N/A'}
-
-Assalamualaikum from IBN MA'IN. Hope you're doing wonderful.
-
-Looks like you have an abandoned cart.
-
-*Order Receipt*
-${cartSummary}
-Home Delivery: ${checkout.shipping_line?.price || '0'} BDT
-
-Total: ${totalPrice + parseFloat(checkout.shipping_line?.price || 0)} BDT
-
-Thank you so much for your patience, Shall we confirm the order, Sir?`;
-
-    // Send to all WhatsApp numbers
-    for (const number of WHATSAPP_NUMBERS) {
-      try {
-        await twilioClient.messages.create({
-          from: 'whatsapp:+14155238886', // Twilio sandbox number
-          to: number,
-          body: message
-        });
-        console.log(`✓ WhatsApp sent to ${number}`);
-      } catch (error) {
-        console.error(`✗ Failed to send to ${number}:`, error.message);
-      }
-    }
-  } catch (error) {
-    console.error('Error sending WhatsApp notifications:', error);
-  }
-}
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Error:', err.message);
-  res.status(500).json({ error: err.message });
-});
-
-// Start server
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
-  console.log(`✓ Abandoned cart webhook listening on port ${PORT}`);
-  console.log(`✓ Shopify store: ${SHOPIFY_STORE}`);
-  console.log(`✓ Webhook URL: /webhook/checkout`);
-});
+    // Message
