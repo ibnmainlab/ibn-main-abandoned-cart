@@ -1,0 +1,19 @@
+{
+    "name": "ibn-main-abandoned-cart-webhook",
+    "version": "1.0.0",
+    "description": "Shopify abandoned cart notifications via WhatsApp/Twilio",
+    "main": "abandoned-cart-webhook.js",
+    "scripts": {
+          "start": "node abandoned-cart-webhook.js"
+    },
+    "dependencies": {
+          "express": "^4.18.2",
+          "body-parser": "^1.20.2",
+          "twilio": "^4.1.0",
+          "axios": "^1.6.0",
+          "dotenv": "^16.3.1"
+    },
+    "engines": {
+          "node": "18.x"
+    }
+}
