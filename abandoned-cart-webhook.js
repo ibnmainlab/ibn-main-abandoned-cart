@@ -64,6 +64,11 @@ app.post('/webhook/checkout', (req, res) => {
   const checkout = req.body;
   const checkoutId = checkout.id;
 
+  // DEBUG: Log what we're receiving
+  console.log(`DEBUG: completed_at = ${checkout.completed_at}`);
+  console.log(`DEBUG: abandoned_checkout_url = ${checkout.abandoned_checkout_url}`);
+  console.log(`DEBUG: Full checkout keys: ${Object.keys(checkout).join(', ')}`);
+
   // Detect abandoned cart: has abandoned_checkout_url but completed_at is null
   if (checkout.completed_at === null && checkout.abandoned_checkout_url) {
     console.log(`[${new Date().toISOString()}] Abandoned cart detected: ${checkoutId}`);
