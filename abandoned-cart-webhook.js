@@ -61,7 +61,7 @@ app.post('/webhook/checkout', (req, res) => {
 
   console.log('✓ Webhook signature valid');
 
-  const checkout = req.body;
+  const checkout = JSON.parse(req.rawBody.toString());
   const checkoutId = checkout.id;
 
   // DEBUG: Log what we're receiving
